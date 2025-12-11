@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@api/*": ["./src/shared/api/*"],
+      "@assets/*": ["./src/shared/assets/*"],
+      "@components/*": ["./src/shared/components/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@contexts/*": ["./src/shared/contexts/*"],
+      "@configs/*": ["./src/shared/configs/*"],
+      "@interfaces/*": ["./src/shared/interfaces/*"],
+      "@services/*": ["./src/shared/services/*"],
+      "@modules/*": ["./src/modules"],
+      "@router/*": ["./src/router/*"],
+      "@customTypes/*": ["./src/shared/types/*"],
+      "@utils/*": ["./src/shared/utils/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
