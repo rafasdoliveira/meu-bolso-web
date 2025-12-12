@@ -1,18 +1,24 @@
-import { Link } from 'react-router-dom';
+import notFoundPageImg from '@shared/assets/images/notFoundPage.png';
+import { Button } from '@shared/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 export function NotFoundPage() {
+  const navigate = useNavigate();
+
   return (
     <div className='flex min-h-screen flex-col items-center justify-center p-4 text-center'>
-      <h1 className='mb-4 text-6xl font-bold'>404</h1>
-      <p className='mb-6 text-xl'>
-        Ops! A página que você procura não foi encontrada.
+      <img src={notFoundPageImg} alt='not-found' width={350} />
+      <p className='text-lg font-bold'>Ops!</p>
+      <p className='mb-6 text-gray-600'>
+        A página que você procura não foi encontrada.
       </p>
-      <Link
-        to='/'
-        className='rounded bg-blue-600 px-6 py-3 text-white transition hover:bg-blue-700'
+      <Button
+        variant='default'
+        onClick={() => navigate('/')}
+        className='h-12 cursor-pointer'
       >
-        Voltar para Home
-      </Link>
+        Voltar para home
+      </Button>
     </div>
   );
 }
