@@ -16,7 +16,14 @@ const DashBoardLayout = ({ children }: Children) => {
     disabled: item.disabled,
   }));
 
-  return <Layout sidebarButton={sidebarButton}>{children}</Layout>;
+  return (
+    <Layout
+      sidebarButton={sidebarButton}
+      breadcrumbs={[{ label: 'DashBoard', path: '/dashboard' }]}
+    >
+      {children}
+    </Layout>
+  );
 };
 
 export { DashBoardLayout };

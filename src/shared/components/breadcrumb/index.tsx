@@ -1,3 +1,4 @@
+import { BreadcrumbType } from '@shared/types/breadcrumbType';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,7 +9,7 @@ import {
 } from '../ui/breadcrumb';
 
 interface BreadcrumbLayoutProps {
-  items: { label: string; href?: string }[];
+  items: BreadcrumbType[];
 }
 
 export default function BreadcrumbLayout({
@@ -18,18 +19,13 @@ export default function BreadcrumbLayout({
     <Breadcrumb>
       <BreadcrumbList>
         {items.map((item, index) => (
-          <BreadcrumbItem
-            key={index}
-            className={index === items.length - 1 ? '' : 'hidden md:block'}
-          >
-            {item.href ? (
-              <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+          <BreadcrumbItem key={item.label}>
+            {item.path ? (
+              <BreadcrumbLink href={item.path}>{item.label}</BreadcrumbLink>
             ) : (
               <BreadcrumbPage>{item.label}</BreadcrumbPage>
             )}
-            {index !== items.length - 1 && (
-              <BreadcrumbSeparator className='hidden md:block' />
-            )}
+            {index < items.length - 1 && <BreadcrumbSeparator />}
           </BreadcrumbItem>
         ))}
       </BreadcrumbList>

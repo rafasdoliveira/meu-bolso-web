@@ -2,7 +2,7 @@ import { Separator } from '@radix-ui/react-separator';
 import { SidebarButtonType } from '@shared/types/sidebarButtonType';
 import { ChevronRight, LayoutDashboard } from 'lucide-react';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,8 +23,12 @@ type Props = {
   items: SidebarButtonType[];
 };
 
-export function NavMain({ items }: Props) {
+export function NavMain({ items }: Readonly<Props>) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) =>
+    location.pathname === path || location.pathname.startsWith(path);
 
   return (
     <SidebarGroup>
@@ -32,6 +36,7 @@ export function NavMain({ items }: Props) {
         <SidebarMenuButton
           tooltip='Dashboard'
           onClick={() => navigate('/dashboard')}
+          className={isActive('/dashboard') ? 'bg-primary text-white' : ''}
         >
           <LayoutDashboard />
           <span>Dashboard</span>
@@ -51,7 +56,7 @@ export function NavMain({ items }: Props) {
                 <SidebarMenuButton
                   tooltip={item.label}
                   onClick={() => navigate(item.path)}
-                  className='cursor-pointer'
+                  className={isActive(item.path) ? 'bg-primary text-white cursor-pointer' : 'cursor-pointer'}
                 >
                   {item.icon && React.isValidElement(item.icon)
                     ? item.icon

@@ -67,13 +67,13 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <div className='rounded-md border'>
+      <div className='rounded-md border bg-white'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {actionButtons.length > 0 && (
-                  <TableHead className='text-center'>#</TableHead>
+                  <TableHead className='text-center'>Ações</TableHead>
                 )}
                 {actions.length > 0 && (
                   <TableHead className='flex items-center justify-center'>

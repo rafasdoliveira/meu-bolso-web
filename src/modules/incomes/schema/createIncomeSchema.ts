@@ -5,21 +5,17 @@ export const createIncomeSchema = z.object({
     message:
       'O campo Data é obrigatório e deve ser uma data válida (YYYY-MM-DD)',
   }),
-  source_id: z
-    .number({
-      message: 'O campo Fonte de Renda é obrigatório e deve ser um número',
-    })
-    .int('O campo Fonte de Renda deve ser um número inteiro'),
+  source_id: z.string({
+    message: 'O campo Fonte de Renda é obrigatório.',
+  }),
   amount: z.number({
-    message: 'O campo Valor é obrigatório e deve ser um número',
+    message: 'O campo Valor é obrigatório.',
   }),
   notes: z.string({ message: 'O campo Observações deve ser texto' }).optional(),
-  payment_type: z
-    .number({ message: 'O campo Tipo de Pagamento é obrigatório' })
-    .int('O campo Tipo de Pagamento deve ser um número inteiro'),
-  status: z
-    .number({ message: 'O campo Status é obrigatório' })
-    .int('O campo Status deve ser um número inteiro'),
+  payment_type: z.string({
+    message: 'O campo Tipo de Pagamento é obrigatório',
+  }),
+  status: z.string({ message: 'O campo Status é obrigatório' }),
 });
 
 export type CreateIncomeSchema = z.infer<typeof createIncomeSchema>;

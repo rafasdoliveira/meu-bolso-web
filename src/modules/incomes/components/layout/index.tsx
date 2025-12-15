@@ -13,6 +13,7 @@ function IncomesLayout({ children }: Readonly<Props>) {
   const location = useLocation();
 
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbType[]>([
+    { label: 'DashBoard', path: '/dashboard' },
     { label: 'Receitas', path: '/receitas' },
   ]);
 

@@ -24,16 +24,16 @@ export function AppSidebar({
 
   return (
     <Sidebar collapsible='icon' {...props}>
-      <SidebarHeader>
+      <SidebarHeader className='bg-white'>
         <SidebarMenuButton>
           <Wallet size={20} className='w-full' />
           <span className='font-bold uppercase'>Meu Bolso</span>
         </SidebarMenuButton>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className='bg-white'>
         <NavMain items={navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className='bg-white'>
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />

@@ -17,22 +17,19 @@ const Layout = ({ children, sidebarButton, breadcrumbs = [] }: Props) => {
     <SidebarProvider>
       <AppSidebar navMain={sidebarButton} />
       <SidebarInset>
-        <header className='flex h-10 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
+        <header className='flex h-10 shrink-0 items-center gap-2 border-b bg-zinc-50 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
           <div className='flex items-center gap-2 px-4'>
             {/* Sidebar */}
             <SidebarTrigger className='-ml-1' />
             <Separator orientation='vertical' className='mr-2 h-4' />
             {/* Breadcrumb */}
-            <BreadcrumbLayout
-              items={breadcrumbs.map(({ label, path }) => ({
-                label,
-                path,
-              }))}
-            />
+            <BreadcrumbLayout items={breadcrumbs} />
           </div>
         </header>
         <div className='flex max-h-[95%] min-h-[94%] max-w-full'>
-          <ScrollArea className='w-full p-4'>{children}</ScrollArea>
+          <ScrollArea className='w-full bg-zinc-50 px-5 py-4'>
+            {children}
+          </ScrollArea>
         </div>
       </SidebarInset>
     </SidebarProvider>
