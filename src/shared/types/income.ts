@@ -1,10 +1,9 @@
 export type Income = {
   id: number;
-  user_id: number;
   date: string;
-  source_id: number;
-  amount: number;
+  source: string;
+  amount: string;
   notes: string;
-  payment_type: number;
-  status: number;
+  paymentType: string;
+  status: string;
 };

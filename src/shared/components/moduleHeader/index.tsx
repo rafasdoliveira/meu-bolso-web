@@ -8,7 +8,7 @@ type headerProps = {
 
 const ModuleHeader = ({ title, icon, subtitle }: headerProps) => {
   return (
-    <div className='mb-6'>
+    <div>
       <div className='flex flex-row items-center'>
         {icon && <div className='animate-bounceIn mr-2'>{icon}</div>}
         <h1 className='text-xl font-semibold'>{title}</h1>

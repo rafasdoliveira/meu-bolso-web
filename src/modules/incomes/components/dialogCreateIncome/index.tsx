@@ -13,11 +13,18 @@ import {
 } from '@shared/components/ui/dialog';
 import { CirclePlus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useListingIncomesStatusQuery } from '../../hooks/useListingIncomesStatusQuery';
+import { useListingSourcesQuery } from '../../hooks/useListingSourcesQuery';
 import { createIncomeDefaultValues } from '../../schema/createIncomeDefaultValues';
 import { createIncomeSchema } from '../../schema/createIncomeSchema';
 import { FormCreateIncome } from '../formCreateIncome';
+import { useListingPaymentTypesQuery } from '../../hooks/useListingPaymentTypesQuery';
 
 function DialogCreateIncome() {
+  const { data: sources } = useListingSourcesQuery();
+  const { data: paymentTypes } = useListingPaymentTypesQuery();
+  const { data: incomeStatus } = useListingIncomesStatusQuery();
+
   const form = useForm({
     resolver: zodResolver(createIncomeSchema),
     defaultValues: createIncomeDefaultValues,
@@ -41,7 +48,7 @@ function DialogCreateIncome() {
             </DialogDescription>
           </DialogHeader>
           <div>
-            <FormCreateIncome form={form} />
+            <FormCreateIncome form={form} incomeStatus={incomeStatus} sources={sources} paymentTypes={paymentTypes} />
           </div>
           <DialogFooter>
             <DialogClose asChild>

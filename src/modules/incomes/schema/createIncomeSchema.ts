@@ -12,10 +12,10 @@ export const createIncomeSchema = z.object({
     message: 'O campo Valor é obrigatório.',
   }),
   notes: z.string({ message: 'O campo Observações deve ser texto' }).optional(),
-  payment_type: z.string({
+  payment_type_id: z.string({
     message: 'O campo Tipo de Pagamento é obrigatório',
   }),
-  status: z.string({ message: 'O campo Status é obrigatório' }),
+  status_id: z.string({ message: 'O campo Status é obrigatório' }),
 });
 
 export type CreateIncomeSchema = z.infer<typeof createIncomeSchema>;

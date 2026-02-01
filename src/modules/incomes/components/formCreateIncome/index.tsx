@@ -11,12 +11,18 @@ import {
 } from '@components/ui/select';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { CreateIncomeSchema } from '../../schema/createIncomeSchema';
+import { GetIncomesStatusOutputDto } from '../../services/getIncomesStatus/getIncomesStatus.dto';
+import { GetPaymentTypesOutputDto } from '../../services/getPaymentTypes/getPaymentTypes.dto';
+import { GetSourcesOutputDto } from '../../services/getSources/getSources.dto';
 
 interface FormCreateIncomeProps {
+  sources: GetSourcesOutputDto;
+  paymentTypes: GetPaymentTypesOutputDto;
   form: UseFormReturn<CreateIncomeSchema>;
+  incomeStatus: GetIncomesStatusOutputDto;
 }
 
-function FormCreateIncome({ form }: Readonly<FormCreateIncomeProps>) {
+function FormCreateIncome({ form, incomeStatus, sources, paymentTypes }: Readonly<FormCreateIncomeProps>) {
   return (
     <div>
       <div className='grid grid-cols-2 gap-2'>
@@ -33,7 +39,9 @@ function FormCreateIncome({ form }: Readonly<FormCreateIncomeProps>) {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Fonte da Receita</SelectLabel>
-                    <SelectItem value='apple'>Apple</SelectItem>
+                    {sources.map((source) => (
+                      <SelectItem key={source.id} value={source.id}>{source.name}</SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -43,21 +51,23 @@ function FormCreateIncome({ form }: Readonly<FormCreateIncomeProps>) {
         <div className='my-2'>
           <Label className='mb-2 font-semibold'>Forma de Recebimento</Label>
           <Controller
-            name='payment_type'
+            name='payment_type_id'
             control={form.control}
             render={({ field }) => {
               return (
                 <Select
-                  value={field.value.toString()}
+                  value={field.value}
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='Select a fruit' />
+                    <SelectValue placeholder='Informe o tipo de recebimento' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Fruits</SelectLabel>
-                      <SelectItem value='apple'>Apple</SelectItem>
+                      <SelectLabel>Tipo de Recebimento</SelectLabel>
+                      {paymentTypes.map((paymentType) => (
+                        <SelectItem key={paymentType.id} value={paymentType.id}>{paymentType.name}</SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -76,21 +86,23 @@ function FormCreateIncome({ form }: Readonly<FormCreateIncomeProps>) {
         <div>
           <Label className='mb-2 font-semibold'>Status</Label>
           <Controller
-            name='payment_type'
+            name='status_id'
             control={form.control}
             render={({ field }) => {
               return (
                 <Select
-                  value={field.value.toString()}
+                  value={field.value}
                   onValueChange={field.onChange}
                 >
                   <SelectTrigger className='w-full'>
-                    <SelectValue placeholder='Select a fruit' />
+                    <SelectValue placeholder='Informe o status' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Fruits</SelectLabel>
-                      <SelectItem value='apple'>Apple</SelectItem>
+                      <SelectLabel>Status</SelectLabel>
+                      {incomeStatus.map((status) => (
+                        <SelectItem key={status.id} value={status.id}>{status.name}</SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -108,37 +120,12 @@ function FormCreateIncome({ form }: Readonly<FormCreateIncomeProps>) {
         placeholder='Informe o valor recebido'
         required
       />
-      <div className='my-4 w-full'>
-        <Label className='mb-2 font-semibold'>Repetição</Label>
-        <Controller
-          name='payment_type'
-          control={form.control}
-          render={({ field }) => {
-            return (
-              <Select
-                value={field.value.toString()}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='Select a fruit' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Fruits</SelectLabel>
-                    <SelectItem value='apple'>Apple</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            );
-          }}
-        />
-      </div>
       <TextInput
         divClassName='my-4'
         control={form.control}
         label='Observação'
-        name='amount'
-        type='number'
+        name='notes'
+        type='text'
         placeholder='Deixe uma observação'
         required
       />
