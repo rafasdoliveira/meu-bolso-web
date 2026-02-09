@@ -7,6 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '../ui/breadcrumb';
+import React from 'react';
 
 interface BreadcrumbLayoutProps {
   items: BreadcrumbType[];
@@ -19,14 +20,19 @@ export default function BreadcrumbLayout({
     <Breadcrumb>
       <BreadcrumbList>
         {items.map((item, index) => (
-          <BreadcrumbItem key={item.label}>
-            {item.path ? (
-              <BreadcrumbLink href={item.path}>{item.label}</BreadcrumbLink>
-            ) : (
-              <BreadcrumbPage>{item.label}</BreadcrumbPage>
-            )}
+          <React.Fragment key={item.label}>
+            <BreadcrumbItem>
+              {item.path ? (
+                <BreadcrumbLink href={item.path}>
+                  {item.label}
+                </BreadcrumbLink>
+              ) : (
+                <BreadcrumbPage>{item.label}</BreadcrumbPage>
+              )}
+            </BreadcrumbItem>
+
             {index < items.length - 1 && <BreadcrumbSeparator />}
-          </BreadcrumbItem>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>

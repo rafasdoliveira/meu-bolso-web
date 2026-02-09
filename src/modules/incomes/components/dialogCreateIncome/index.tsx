@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import Form from '@shared/components/form/index';
 import { Button } from '@shared/components/ui/button';
 import {
   Dialog,
@@ -12,27 +11,64 @@ import {
   DialogTrigger,
 } from '@shared/components/ui/dialog';
 import { CirclePlus } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { Resolver, useForm } from 'react-hook-form';
+import { useCreateIncomeMutation } from '../../hooks/mutations/useCreateIncomeMutation';
+import { useListingIncomesStatusQuery } from '../../hooks/queries/useListingIncomesStatusQuery';
+import { useListingPaymentTypesQuery } from '../../hooks/queries/useListingPaymentTypesQuery';
+import { useListingSourcesQuery } from '../../hooks/queries/useListingSourcesQuery';
 import { createIncomeDefaultValues } from '../../schema/createIncomeDefaultValues';
-import { createIncomeSchema } from '../../schema/createIncomeSchema';
+import { CreateIncomeSchema, createIncomeSchema } from '../../schema/createIncomeSchema';
+import { CreateIncomeInputDto } from '../../services/postIncomes/postIncomes.dto';
 import { FormCreateIncome } from '../formCreateIncome';
+import { toast } from 'sonner';
 
 function DialogCreateIncome() {
-  const form = useForm({
-    resolver: zodResolver(createIncomeSchema),
+  const { data: sources = [] } = useListingSourcesQuery();
+  const { data: paymentTypes = [] } = useListingPaymentTypesQuery();
+  const { data: incomeStatus = [] } = useListingIncomesStatusQuery();
+
+  const { mutate: createIncome, isPending } = useCreateIncomeMutation();
+
+  const form = useForm<CreateIncomeSchema>({
+    resolver: zodResolver(createIncomeSchema) as Resolver<CreateIncomeSchema>,
     defaultValues: createIncomeDefaultValues,
   });
 
+
+  const onSubmit = (data: CreateIncomeSchema) => {
+
+    const params: CreateIncomeInputDto = {
+      user_id: 1,
+      date: data.date,
+      source_id: Number(data.source_id),
+      amount: data.amount,
+      notes: data.notes,
+      payment_type_id: Number(data.payment_type_id),
+      status_id: Number(data.status_id),
+    }
+    try {
+      createIncome(params);
+      toast.success('Receita cadastrada com sucesso!')
+      form.reset();
+    } catch (error) {
+      console.log(error);
+       form.setError('root', {
+        type: 'server',
+        message: 'Erro ao salvar a receita. Tente novamente.',
+      });
+    }
+  };
+
   return (
     <Dialog>
-      <Form form={form}>
-        <DialogTrigger asChild>
-          <Button variant='default'>
-            <CirclePlus />
-            Receita
-          </Button>
-        </DialogTrigger>
-        <DialogContent className='sm:max-w-[425px]'>
+      <DialogTrigger asChild>
+        <Button>
+          <CirclePlus />
+          Receita
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Cadastro de Receita</DialogTitle>
             <DialogDescription>
@@ -40,19 +76,28 @@ function DialogCreateIncome() {
               suas finanças.
             </DialogDescription>
           </DialogHeader>
-          <div>
-            <FormCreateIncome form={form} />
-          </div>
+
+          <FormCreateIncome
+            form={form}
+            incomeStatus={incomeStatus}
+            sources={sources}
+            paymentTypes={paymentTypes}
+          />
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant='destructive'>Cancelar</Button>
+              <Button type="button" variant="destructive">
+                Cancelar
+              </Button>
             </DialogClose>
-            <Button type='submit'>Salvar</Button>
+
+            <Button type="button" onClick={() => form.handleSubmit(onSubmit)()} disabled={isPending}>
+              {isPending ? 'Salvando...' : 'Salvar'}
+            </Button>
           </DialogFooter>
-        </DialogContent>
-      </Form>
+      </DialogContent>
     </Dialog>
   );
 }
+
 
 export { DialogCreateIncome };

@@ -56,7 +56,11 @@ export function NavMain({ items }: Readonly<Props>) {
                 <SidebarMenuButton
                   tooltip={item.label}
                   onClick={() => navigate(item.path)}
-                  className={isActive(item.path) ? 'bg-primary text-white cursor-pointer' : 'cursor-pointer'}
+                  className={
+                    isActive(item.path)
+                      ? 'bg-primary cursor-pointer text-white'
+                      : 'cursor-pointer'
+                  }
                 >
                   {item.icon && React.isValidElement(item.icon)
                     ? item.icon

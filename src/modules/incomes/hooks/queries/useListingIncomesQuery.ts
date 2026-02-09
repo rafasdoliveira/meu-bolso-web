@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { getIncomesService } from '../services/getIncomes/getIncomes.service';
+import { getIncomesService } from '../../services/getIncomes/getIncomes.service';
 import {
   GetIncomesOutputDto,
   GetIncomesIntputDto,
-} from '../services/getIncomes/getIncomes.dto';
+} from '../../services/getIncomes/getIncomes.dto';
 
 const useListingIncomesQuery = ({
   page = 1,

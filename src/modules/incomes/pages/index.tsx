@@ -1,5 +1,4 @@
 import { ModuleHeader } from '@components/moduleHeader';
-import { Card } from '@components/ui/card';
 import {
   Select,
   SelectContent,
@@ -22,10 +21,13 @@ function ReceitasPage() {
           subtitle='Acompanhe e organize todas as suas receitas de forma prática.'
         />
       </div>
-      <div className='flex items-center justify-end gap-2 py-2'>
-        <div className='flex h-9 w-80 items-center rounded-lg border px-2 py-1 bg-white'>
+      <div className='flex items-center justify-end gap-2 py-4'>
+        <div className='flex h-9 w-80 items-center rounded-lg border bg-white px-2 py-1'>
           <SearchIcon size='18px' />
-          <Input className='border-none placeholder:text-gray-400' placeholder='Pesquise' />
+          <Input
+            className='border-none placeholder:text-gray-400'
+            placeholder='Pesquise'
+          />
         </div>
         <Select>
           <SelectTrigger className='w-[180px] bg-white'>
@@ -53,24 +55,6 @@ function ReceitasPage() {
           </SelectContent>
         </Select>
         <DialogCreateIncome />
-      </div>
-      <div className='grid grid-cols-1 gap-4 py-4 sm:grid-cols-2 lg:grid-cols-4'>
-        <Card className='h-28 gap-2 px-6'>
-          <div className='text-lg font-semibold'>Total Recebido</div>
-          <div className='text-base font-bold'>R$ 20.450,00</div>
-        </Card>
-        <Card className='h-28 gap-2 px-6'>
-          <div className='text-lg font-semibold'>Qtde Entradas</div>
-          <div className='text-base font-bold'>R$ 5</div>
-        </Card>
-        <Card className='h-28 gap-2 px-6'>
-          <div className='text-lg font-semibold'>Maior Receita</div>
-          <div className='text-base font-bold'>R$ 12.450,00</div>
-        </Card>
-        <Card className='h-28 gap-2 px-6'>
-          <div className='text-lg font-semibold'>Receita Média</div>
-          <div className='text-base font-bold'>R$ 4.090,00</div>
-        </Card>
       </div>
       <ListIncomesDataTable />
     </IncomesLayout>
