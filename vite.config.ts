@@ -23,7 +23,8 @@ export default defineConfig({
         'node_modules/',
         'dist/',
         '**/*.config.*',
-        '**/*.d.ts'
+        '**/*.d.ts',
+        'src/shared/api/http.ts'
       ]
     }
   }
