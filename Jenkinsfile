@@ -122,6 +122,7 @@ pipeline {
 
       sh "git checkout ${branchName} && git pull origin ${branchName}"
 
+      // Limpa artefatos do front
       sh 'git reset --hard'
       sh 'git clean -fd'
 
@@ -141,14 +142,13 @@ pipeline {
           passwordVariable: 'GIT_PASSWORD'
         )
       ]) {
-        sh """
-          git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
-          ${branchName} --tags
-        """
+        sh 'git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git ' +
+           "${branchName} --tags"
       }
     }
   }
 }
+
 
   }
 }
