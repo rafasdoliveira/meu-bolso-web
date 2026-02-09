@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSourcesService } from '../services/getSources/getSources.service';
+import { getSourcesService } from '../../services/getSources/getSources.service';
 
 const useListingSourcesQuery = () => {
   return useQuery({

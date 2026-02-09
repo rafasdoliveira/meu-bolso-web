@@ -2,7 +2,7 @@ import { DataTable } from '@components/datatable';
 import { ActionButton } from '@shared/types/actionButtonType';
 import { Pencil } from 'lucide-react';
 import { tableColumnsIncomes } from '../tableColumnsIncomes';
-import { useListingIncomesQuery } from '../../hooks/useListingIncomesQuery';
+import { useListingIncomesQuery } from '../../hooks/queries/useListingIncomesQuery';
 import { Income } from '@shared/types/income';
 import { usePagination } from '@shared/hooks/usePagination';
 

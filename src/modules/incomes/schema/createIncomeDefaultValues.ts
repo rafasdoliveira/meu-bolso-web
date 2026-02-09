@@ -5,6 +5,6 @@ export const createIncomeDefaultValues: CreateIncomeSchema = {
   source_id: '',
   amount: 0,
   notes: '',
-  payment_type: '',
-  status: '',
+  payment_type_id: '',
+  status_id: '',
 };

@@ -14,6 +14,7 @@ import { CreateIncomeSchema } from '../../schema/createIncomeSchema';
 import { GetIncomesStatusOutputDto } from '../../services/getIncomesStatus/getIncomesStatus.dto';
 import { GetPaymentTypesOutputDto } from '../../services/getPaymentTypes/getPaymentTypes.dto';
 import { GetSourcesOutputDto } from '../../services/getSources/getSources.dto';
+import Form from '@components/form';
 
 interface FormCreateIncomeProps {
   sources: GetSourcesOutputDto;
@@ -24,6 +25,7 @@ interface FormCreateIncomeProps {
 
 function FormCreateIncome({ form, incomeStatus, sources, paymentTypes }: Readonly<FormCreateIncomeProps>) {
   return (
+    <Form form={form}>
     <div>
       <div className='grid grid-cols-2 gap-2'>
         <div className='my-2'>
@@ -40,7 +42,7 @@ function FormCreateIncome({ form, incomeStatus, sources, paymentTypes }: Readonl
                   <SelectGroup>
                     <SelectLabel>Fonte da Receita</SelectLabel>
                     {sources.map((source) => (
-                      <SelectItem key={source.id} value={source.id}>{source.name}</SelectItem>
+                      <SelectItem key={source.id} value={String(source.id)}>{source.name}</SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>
@@ -66,7 +68,7 @@ function FormCreateIncome({ form, incomeStatus, sources, paymentTypes }: Readonl
                     <SelectGroup>
                       <SelectLabel>Tipo de Recebimento</SelectLabel>
                       {paymentTypes.map((paymentType) => (
-                        <SelectItem key={paymentType.id} value={paymentType.id}>{paymentType.name}</SelectItem>
+                        <SelectItem key={paymentType.id} value={String(paymentType.id)}>{paymentType.name}</SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
@@ -101,7 +103,7 @@ function FormCreateIncome({ form, incomeStatus, sources, paymentTypes }: Readonl
                     <SelectGroup>
                       <SelectLabel>Status</SelectLabel>
                       {incomeStatus.map((status) => (
-                        <SelectItem key={status.id} value={status.id}>{status.name}</SelectItem>
+                        <SelectItem key={status.id} value={String(status.id)}>{status.name}</SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
@@ -130,6 +132,7 @@ function FormCreateIncome({ form, incomeStatus, sources, paymentTypes }: Readonl
         required
       />
     </div>
+    </Form>
   );
 }
 

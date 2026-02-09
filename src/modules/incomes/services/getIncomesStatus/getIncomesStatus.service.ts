@@ -1,13 +1,14 @@
 import { http } from '@shared/api/http';
 import { AxiosInstance } from 'axios';
 import { GetIncomesStatusOutputDto } from './getIncomesStatus.dto';
+import { ApiResponse } from '@shared/types/apiResponse';
 
 class GetIncomesStatusService {
   constructor(private readonly api: AxiosInstance) {}
 
   async execute(): Promise<GetIncomesStatusOutputDto> {
-    const response = await this.api.get<GetIncomesStatusOutputDto>(`/income-status`);
-    return response.data;
+    const response = await this.api.get<ApiResponse<GetIncomesStatusOutputDto>>(`/income-status`);
+    return response.data.data;
   }
 }
 
