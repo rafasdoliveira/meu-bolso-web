@@ -109,17 +109,15 @@ pipeline {
     }
 
     stage('Create Git Tag') {
+      when {
+        branch 'main'
+      }
       steps {
         script {
-          def branch = env.GIT_BRANCH?.replace('origin/', '')
-          echo "Branch detectada: ${branch}"
+          echo "Branch detectada: ${env.BRANCH_NAME}"
 
-          if (!(branch in ['main', 'develop'])) {
-            echo "Branch ${branch} não gera release. Pulando."
-            return
-          }
+          sh 'git checkout main'
 
-          sh "git checkout ${branch}"
           sh 'git reset --hard'
           sh 'git clean -fd'
 
@@ -135,10 +133,10 @@ pipeline {
               passwordVariable: 'GIT_PASSWORD'
             )
           ]) {
-            sh """
-              git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
-              ${branch} --tags
-            """
+            sh '''
+              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
+              main --tags
+            '''
           }
         }
       }
