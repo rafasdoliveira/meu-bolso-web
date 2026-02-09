@@ -109,13 +109,11 @@ pipeline {
     }
 
     stage('Create Git Tag') {
+      when {
+        branch 'main'
+      }
       steps {
         script {
-          echo "Criando tag a partir do commit atual (HEAD) e enviando para main"
-
-          sh 'git reset --hard'
-          sh 'git clean -fd'
-
           sh 'git config user.email "jenkins@meubolso.com"'
           sh 'git config user.name "Jenkins CI"'
 
@@ -129,7 +127,7 @@ pipeline {
             )
           ]) {
             sh '''
-              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git HEAD:refs/heads/main --tags
+              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git main --tags
             '''
           }
         }
