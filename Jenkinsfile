@@ -65,6 +65,13 @@ pipeline {
       }
     }
 
+    stage('Clean Trivy Cache') {
+      steps {
+        sh 'rm -rf /var/jenkins_home/trivy_cache || true'
+      }
+    }
+
+
     stage('Trivy Repo Scan') {
       steps {
         sh '''
