@@ -109,43 +109,44 @@ pipeline {
     }
 
     stage('Create Git Tag') {
-  steps {
-    script {
-      def branch = sh(
-        script: 'git rev-parse --abbrev-ref HEAD',
-        returnStdout: true
-      ).trim()
+      steps {
+        script {
+          sh 'git checkout main'
 
-      echo "Branch detectada: ${branch}"
+          def branch = sh(
+            script: 'git rev-parse --abbrev-ref HEAD',
+            returnStdout: true
+          ).trim()
 
-      if (branch != 'main') {
-        echo "Não é main. Pulando criação de tag."
-        return
-      }
+          echo "Branch detectada: ${branch}"
 
-      sh 'git reset --hard'
-      sh 'git clean -fd'
+          if (branch != 'main') {
+            echo "Não é main. Pulando criação de tag."
+            return
+          }
 
-      sh 'git config user.email "jenkins@meubolso.com"'
-      sh 'git config user.name "Jenkins CI"'
+          sh 'git reset --hard'
+          sh 'git clean -fd'
 
-      sh 'npm version patch -m "chore(release): %s [skip ci]"'
+          sh 'git config user.email "jenkins@meubolso.com"'
+          sh 'git config user.name "Jenkins CI"'
 
-      withCredentials([
-        usernamePassword(
-          credentialsId: 'git-credentials',
-          usernameVariable: 'GIT_USERNAME',
-          passwordVariable: 'GIT_PASSWORD'
-        )
-      ]) {
-        sh '''
-          git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
-          HEAD --tags
-        '''
+          sh 'npm version patch -m "chore(release): %s [skip ci]"'
+
+          withCredentials([
+            usernamePassword(
+              credentialsId: 'git-credentials',
+              usernameVariable: 'GIT_USERNAME',
+              passwordVariable: 'GIT_PASSWORD'
+            )
+          ]) {
+            sh '''
+              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
+              main --tags
+            '''
+          }
+        }
       }
     }
-  }
-}
-
   }
 }
