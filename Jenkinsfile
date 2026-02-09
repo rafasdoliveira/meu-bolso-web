@@ -109,19 +109,23 @@ pipeline {
     }
 
     stage('Create Git Tag') {
-      when {
-        anyOf {
-          branch 'main'
-          branch 'configArt'
-        }
-      }
       steps {
         script {
-          echo "Tentando push na branch: ${env.BRANCH_NAME}"
+          def branch = sh(
+            script: 'git rev-parse --abbrev-ref HEAD',
+            returnStdout: true
+          ).trim()
 
-          sh "git checkout ${env.BRANCH_NAME} || git checkout -b ${env.BRANCH_NAME}"
+          echo "Branch atual: ${branch}"
+
+          if (!(branch in ['main', 'develop'])) {
+            echo "Branch ${branch} não gera release. Pulando."
+            return
+          }
+
           sh 'git config user.email "jenkins@meubolso.com"'
           sh 'git config user.name "Jenkins CI"'
+
           sh 'npm version patch -m "chore(release): %s [skip ci]"'
 
           withCredentials([
@@ -133,7 +137,7 @@ pipeline {
           ]) {
             sh """
               git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
-              ${env.BRANCH_NAME} --tags
+              ${branch} --tags
             """
           }
         }
