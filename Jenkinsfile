@@ -98,10 +98,10 @@ pipeline {
         echo "Buildando imagem versão: ${APP_VERSION}"
 
         sh """
-          docker build \
-            -t ${REGISTRY_IMAGE}:${APP_VERSION} \
-            -t ${REGISTRY_IMAGE}:latest \
-            .
+          docker build --no-cache \
+          -t meu-bolso-web:${APP_VERSION} \
+          -t meu-bolso-web:latest \
+          .
         """
       }
     }
