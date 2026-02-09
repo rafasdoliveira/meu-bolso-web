@@ -111,27 +111,15 @@ pipeline {
     stage('Create Git Tag') {
       steps {
         script {
-          def branch = sh(
-            script: 'git rev-parse --abbrev-ref HEAD',
-            returnStdout: true
-          ).trim()
+          echo "Criando tag a partir do commit atual (HEAD) e enviando para main"
 
-          echo "Branch detectada pelo git: ${branch}"
+          sh 'git reset --hard'
+          sh 'git clean -fd'
 
-          if (branch != 'main') {
-            echo "Não é main. Pulando criação de tag."
-            return
-          }
+          sh 'git config user.email "jenkins@meubolso.com"'
+          sh 'git config user.name "Jenkins CI"'
 
-          sh '''
-            git reset --hard origin/main
-            git clean -fd
-
-            git config user.email "jenkins@meubolso.com"
-            git config user.name "Jenkins CI"
-
-            npm version patch -m "chore(release): %s [skip ci]"
-          '''
+          sh 'npm version patch -m "chore(release): %s [skip ci]"'
 
           withCredentials([
             usernamePassword(
@@ -141,8 +129,8 @@ pipeline {
             )
           ]) {
             sh '''
-              git remote set-url origin https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git
-              git push origin main --tags
+              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
+              HEAD:refs/heads/main --tags
             '''
           }
         }
