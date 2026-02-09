@@ -114,6 +114,11 @@ pipeline {
       }
       steps {
         script {
+          echo "Criando tag na branch ${env.BRANCH_NAME}"
+
+          sh 'git reset --hard'
+          sh 'git clean -fdx'
+
           sh 'git config user.email "jenkins@meubolso.com"'
           sh 'git config user.name "Jenkins CI"'
 
@@ -127,7 +132,8 @@ pipeline {
             )
           ]) {
             sh '''
-              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git main --tags
+              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
+              HEAD --tags
             '''
           }
         }
