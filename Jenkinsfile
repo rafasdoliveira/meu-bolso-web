@@ -5,6 +5,7 @@ pipeline {
     REGISTRY_IMAGE     = 'meu-bolso-web'
     SONAR_PROJECT_KEY  = 'meu-bolso-web'
     SONAR_HOST_URL     = 'http://sonarqube:9000'
+    APP_VERSION   = ''
   }
 
   stages {
@@ -86,55 +87,76 @@ pipeline {
       }
     }
 
-    stage('Docker Build') {
-      steps {
-        sh '''
-          docker build --no-cache \
-            -t $REGISTRY_IMAGE:${GIT_COMMIT} \
-            -t $REGISTRY_IMAGE:latest \
+  stage('Docker Build') {
+    steps {
+      script {
+        APP_VERSION = sh(
+          script: "node -p \"require('./package.json').version\"",
+          returnStdout: true
+        ).trim()
+
+        echo "Buildando imagem versão: ${APP_VERSION}"
+
+        sh """
+          docker build \
+            -t ${REGISTRY_IMAGE}:${APP_VERSION} \
+            -t ${REGISTRY_IMAGE}:latest \
             .
-        '''
+        """
       }
     }
+  }
+
+    // stage('Docker Build') {
+    //   steps {
+    //     sh '''
+    //       docker build --no-cache \
+    //         -t $REGISTRY_IMAGE:${GIT_COMMIT} \
+    //         -t $REGISTRY_IMAGE:latest \
+    //         .
+    //     '''
+    //   }
+    // }
 
     stage('Trivy Image Scan') {
       steps {
-        sh '''
+        sh """
           trivy image \
             --severity HIGH,CRITICAL \
             --exit-code 1 \
-            $REGISTRY_IMAGE:${GIT_COMMIT}
-        '''
+            ${REGISTRY_IMAGE}:${APP_VERSION}
+        """
       }
     }
+    // stage('Trivy Image Scan') {
+    //   steps {
+    //     sh '''
+    //       trivy image \
+    //         --severity HIGH,CRITICAL \
+    //         --exit-code 1 \
+    //         $REGISTRY_IMAGE:${GIT_COMMIT}
+    //     '''
+    //   }
+    // }
 
     stage('Create Git Tag') {
       when {
-        anyOf {
-          branch 'main'
-          branch 'develop'
-        }
+        branch 'main'
       }
       steps {
         script {
-          def branchName = env.BRANCH_NAME
-          echo "Criando tag na branch: ${branchName}"
+          echo "Criando tag Git v${APP_VERSION} na branch main"
 
           sh """
             set -e
-            git checkout ${branchName}
-            git pull origin ${branchName}
-            git reset --hard
-            git clean -fd
+            git checkout main
+            git pull origin main
             git config user.email "jenkins@meubolso.com"
             git config user.name "Jenkins CI"
           """
 
-          if (branchName == 'main') {
-            sh "npm version patch -m 'chore(release): %s [skip ci]'"
-          } else {
-            sh "npm version prepatch --preid=${branchName} -m 'chore(env-release): %s [skip ci]'"
-          }
+          // garante que a tag bate com a versão usada no Docker
+          sh "git tag v${APP_VERSION}"
 
           withCredentials([
             usernamePassword(
@@ -143,10 +165,10 @@ pipeline {
               passwordVariable: 'GIT_PASSWORD'
             )
           ]) {
-            sh '''
-              git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
-              $BRANCH_NAME --tags
-            '''
+            sh """
+              git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
+              main --tags
+            """
           }
         }
       }
