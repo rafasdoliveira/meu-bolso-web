@@ -137,17 +137,18 @@ pipeline {
       }
 
       withCredentials([
-        usernamePassword(
-          credentialsId: 'git-credentials',
-          usernameVariable: 'GIT_USERNAME',
-          passwordVariable: 'GIT_PASSWORD'
-        )
-      ]) {
-        sh """
-          git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
-          ${branchName} --tags
-        """
-      }
+  usernamePassword(
+    credentialsId: 'git-credentials',
+    usernameVariable: 'GIT_USERNAME',
+    passwordVariable: 'GIT_PASSWORD'
+  )
+]) {
+  sh '''
+    git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
+    '"${BRANCH_NAME}"' --tags
+  '''
+}
+
     }
   }
 }
