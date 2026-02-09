@@ -116,8 +116,6 @@ pipeline {
         script {
           echo "Branch detectada: ${env.BRANCH_NAME}"
 
-          sh 'git checkout main'
-
           sh 'git reset --hard'
           sh 'git clean -fd'
 
@@ -135,7 +133,7 @@ pipeline {
           ]) {
             sh '''
               git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
-              main --tags
+              HEAD --tags
             '''
           }
         }
