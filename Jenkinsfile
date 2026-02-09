@@ -112,7 +112,6 @@ pipeline {
       steps {
         script {
           def branch = env.GIT_BRANCH?.replace('origin/', '')
-
           echo "Branch detectada: ${branch}"
 
           if (!(branch in ['main', 'develop'])) {
@@ -120,7 +119,10 @@ pipeline {
             return
           }
 
-          sh 'git checkout ' + branch
+          sh "git checkout ${branch}"
+          sh 'git reset --hard'
+          sh 'git clean -fd'
+
           sh 'git config user.email "jenkins@meubolso.com"'
           sh 'git config user.name "Jenkins CI"'
 
