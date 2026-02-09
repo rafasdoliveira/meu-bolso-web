@@ -138,40 +138,87 @@ pipeline {
     //     '''
     //   }
     // }
+stage('Create Git Tag') {
+  when {
+    branch 'main'
+  }
+  steps {
+    script {
+      def VERSION = sh(
+        script: "node -p \"require('./package.json').version\"",
+        returnStdout: true
+      ).trim()
 
-    stage('Create Git Tag') {
-      when {
-        branch 'main'
+      echo "Versão detectada: v${VERSION}"
+
+      // verifica se a tag já existe
+      def tagExists = sh(
+        script: "git tag -l v${VERSION}",
+        returnStdout: true
+      ).trim()
+
+      if (tagExists) {
+        echo "Tag v${VERSION} já existe. Pulando criação."
+        return
       }
-      steps {
-        script {
-          echo "Criando tag Git v${APP_VERSION} na branch main"
 
-          sh """
-            set -e
-            git checkout main
-            git pull origin main
-            git config user.email "jenkins@meubolso.com"
-            git config user.name "Jenkins CI"
-          """
+      sh """
+        git config user.email "jenkins@meubolso.com"
+        git config user.name "Jenkins CI"
+        git tag -a v${VERSION} -m "release: v${VERSION}"
+      """
 
-          // garante que a tag bate com a versão usada no Docker
-          sh "git tag v${APP_VERSION}"
-
-          withCredentials([
-            usernamePassword(
-              credentialsId: 'git-credentials',
-              usernameVariable: 'GIT_USERNAME',
-              passwordVariable: 'GIT_PASSWORD'
-            )
-          ]) {
-            sh """
-              git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
-              main --tags
-            """
-          }
-        }
+      withCredentials([
+        usernamePassword(
+          credentialsId: 'git-credentials',
+          usernameVariable: 'GIT_USERNAME',
+          passwordVariable: 'GIT_PASSWORD'
+        )
+      ]) {
+        sh """
+          git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git \
+          v${VERSION}
+        """
       }
+
+      echo "Tag v${VERSION} criada com sucesso."
     }
+  }
+}
+
+    // stage('Create Git Tag') {
+    //   when {
+    //     branch 'main'
+    //   }
+    //   steps {
+    //     script {
+    //       echo "Criando tag Git v${APP_VERSION} na branch main"
+
+    //       sh """
+    //         set -e
+    //         git checkout main
+    //         git pull origin main
+    //         git config user.email "jenkins@meubolso.com"
+    //         git config user.name "Jenkins CI"
+    //       """
+
+    //       // garante que a tag bate com a versão usada no Docker
+    //       sh "git tag v${APP_VERSION}"
+
+    //       withCredentials([
+    //         usernamePassword(
+    //           credentialsId: 'git-credentials',
+    //           usernameVariable: 'GIT_USERNAME',
+    //           passwordVariable: 'GIT_PASSWORD'
+    //         )
+    //       ]) {
+    //         sh """
+    //           git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
+    //           main --tags
+    //         """
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
