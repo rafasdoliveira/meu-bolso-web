@@ -43,15 +43,16 @@ pipeline {
         withSonarQubeEnv('SONAR_LOCAL') {
           sh '''
             npx sonar-scanner \
-              -Dsonar.projectKey=meu-bolso-web \
-              -Dsonar.sources=src \
-              -Dsonar.tests=src \
-              -Dsonar.test.inclusions="src/**/*.{spec,test}.{js,jsx,ts,tsx}" \
-              -Dsonar.exclusions="**/*.config.*,**/dist/**,**/node_modules/**" \
-              -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-              -Dsonar.host.url=http://sonarqube:9000 \
-              -Dsonar.login=$SONAR_TOKEN
-          '''
+                -Dsonar.projectKey=meu-bolso-web \
+                -Dsonar.sources=src \
+                -Dsonar.tests=src \
+                -Dsonar.typescript.tsconfigPath=tsconfig.sonar.json \
+                -Dsonar.test.inclusions="src/**/*.{spec,test}.{js,jsx,ts,tsx}" \
+                -Dsonar.exclusions="**/*.config.*,**/dist/**,**/node_modules/**" \
+                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                -Dsonar.host.url=http://sonarqube:9000 \
+                -Dsonar.login=$SONAR_TOKEN
+            '''
         }
       }
     }
