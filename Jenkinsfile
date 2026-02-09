@@ -118,16 +118,17 @@ pipeline {
   steps {
     script {
       def branchName = env.BRANCH_NAME
-      echo "Tentando push na branch: ${branchName}"
+      echo "Criando tag na branch: ${branchName}"
 
-      sh "git checkout ${branchName} && git pull origin ${branchName}"
-
-      // Limpa artefatos do front
-      sh 'git reset --hard'
-      sh 'git clean -fd'
-
-      sh 'git config user.email "jenkins@meubolso.com"'
-      sh 'git config user.name "Jenkins CI"'
+      sh """
+        set -e
+        git checkout ${branchName}
+        git pull origin ${branchName}
+        git reset --hard
+        git clean -fd
+        git config user.email "jenkins@meubolso.com"
+        git config user.name "Jenkins CI"
+      """
 
       if (branchName == 'main') {
         sh "npm version patch -m 'chore(release): %s [skip ci]'"
@@ -142,13 +143,13 @@ pipeline {
           passwordVariable: 'GIT_PASSWORD'
         )
       ]) {
-        sh 'git push https://$GIT_USERNAME:$GIT_PASSWORD@github.com/rafasdoliveira/meu-bolso-web.git ' +
-           "${branchName} --tags"
+        sh """
+          git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/rafasdoliveira/meu-bolso-web.git \
+          ${branchName} --tags
+        """
       }
     }
   }
 }
-
-
   }
 }
