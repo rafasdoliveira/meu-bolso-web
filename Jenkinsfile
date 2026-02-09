@@ -111,18 +111,16 @@ pipeline {
     stage('Create Git Tag') {
       steps {
         script {
-          def branch = sh(
-            script: 'git rev-parse --abbrev-ref HEAD',
-            returnStdout: true
-          ).trim()
+          def branch = env.GIT_BRANCH?.replace('origin/', '')
 
-          echo "Branch atual: ${branch}"
+          echo "Branch detectada: ${branch}"
 
           if (!(branch in ['main', 'develop'])) {
             echo "Branch ${branch} não gera release. Pulando."
             return
           }
 
+          sh 'git checkout ' + branch
           sh 'git config user.email "jenkins@meubolso.com"'
           sh 'git config user.name "Jenkins CI"'
 
