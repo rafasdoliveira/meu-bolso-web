@@ -11,10 +11,10 @@ const SideBarButtonsExpenses: SidebarButtonType[] = [
       {
         icon: <GiPayMoney />,
         title: 'Minhas Despesas',
-        path: '/receitas',
+        path: '/despesas',
       },
     ],
-    path: '/receitas',
+    path: '/despesas',
   },
 ];
 
