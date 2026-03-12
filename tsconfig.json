@@ -31,7 +31,7 @@
       "@configs/*": ["./src/shared/configs/*"],
       "@interfaces/*": ["./src/shared/interfaces/*"],
       "@services/*": ["./src/shared/services/*"],
-      "@modules/*": ["./src/modules"],
+      "@modules/*": ["./src/modules/*"],
       "@router/*": ["./src/router/*"],
       "@customTypes/*": ["./src/shared/types/*"],
       "@utils/*": ["./src/shared/utils/*"]

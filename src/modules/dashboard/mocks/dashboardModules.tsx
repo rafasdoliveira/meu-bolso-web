@@ -1,10 +1,8 @@
-import { DashboardModule } from '../types/dashboardModulesType';
 import {
-  CreditCard,
-  Target,
-  ArrowUpCircle,
   ArrowDownCircle,
+  ArrowUpCircle
 } from 'lucide-react';
+import { DashboardModule } from '../types/dashboardModulesType';
 
 const dashboardModules = () => {
   const modules: DashboardModule[] = [
@@ -25,24 +23,6 @@ const dashboardModules = () => {
       permission: 'A',
       moduleAction: [],
       icon: <ArrowDownCircle />,
-    },
-    {
-      title: 'Cartões',
-      description: 'Cadastre seus cartões e acompanha de perto.',
-      path: '/cartoes',
-      disabled: false,
-      permission: 'A',
-      moduleAction: [],
-      icon: <CreditCard />,
-    },
-    {
-      title: 'Objetivos',
-      description: 'Trace metas e crie objetivos.',
-      path: '/objetivos',
-      disabled: false,
-      permission: 'A',
-      moduleAction: [],
-      icon: <Target />,
     },
   ];
   return {

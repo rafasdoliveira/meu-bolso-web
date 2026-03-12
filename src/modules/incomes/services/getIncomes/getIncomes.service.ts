@@ -7,9 +7,12 @@ class GetIncomesService {
   constructor(private readonly api: AxiosInstance) {}
 
   async execute(params: GetIncomesIntputDto): Promise<GetIncomesOutputDto> {
-    const response = await this.api.get<ApiResponse<GetIncomesOutputDto>>(`/incomes`, {
-      params,
-    });
+    const response = await this.api.get<ApiResponse<GetIncomesOutputDto>>(
+      `/incomes`,
+      {
+        params,
+      },
+    );
     return response.data.data;
   }
 }

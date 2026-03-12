@@ -23,9 +23,7 @@ export default function BreadcrumbLayout({
           <React.Fragment key={item.label}>
             <BreadcrumbItem>
               {item.path ? (
-                <BreadcrumbLink href={item.path}>
-                  {item.label}
-                </BreadcrumbLink>
+                <BreadcrumbLink href={item.path}>{item.label}</BreadcrumbLink>
               ) : (
                 <BreadcrumbPage>{item.label}</BreadcrumbPage>
               )}

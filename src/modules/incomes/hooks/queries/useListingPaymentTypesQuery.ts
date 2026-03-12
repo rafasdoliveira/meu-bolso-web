@@ -5,7 +5,7 @@ const useListingPaymentTypesQuery = () => {
   return useQuery({
     queryKey: ['listing-payment-types'],
     queryFn: async () => getPaymentTypesService.execute(),
-    initialData: []
+    initialData: [],
   });
 };
 

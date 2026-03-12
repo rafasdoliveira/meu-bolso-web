@@ -1,45 +1,33 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
-import { UserContextType } from './userContextType';
+import React, { createContext, useMemo, useState } from 'react';
+import { AuthUser, UserContextType } from './userContextType';
+
+const USER_KEY = '@auth_user';
+
+function loadUser(): AuthUser | null {
+  try {
+    const raw = localStorage.getItem(USER_KEY);
+    return raw ? (JSON.parse(raw) as AuthUser) : null;
+  } catch {
+    return null;
+  }
+}
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
 const UserContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<string>(() => {
-    const userLocalStorage = localStorage.getItem('@user');
-    if (!userLocalStorage) return '';
-    return userLocalStorage;
-  });
-  const [perfil, setPerfil] = useState<string[]>(() => {
-    const perfilLocalStorage = localStorage.getItem('@perfil');
-    if (!perfilLocalStorage) return '';
-    return JSON.parse(perfilLocalStorage);
-  });
+  const [user, setUserState] = useState<AuthUser | null>(loadUser);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('@user', user);
+  const setUser = (next: AuthUser | null) => {
+    setUserState(next);
+    if (next) {
+      localStorage.setItem(USER_KEY, JSON.stringify(next));
+    } else {
+      localStorage.removeItem(USER_KEY);
     }
-  }, [user]);
+  };
 
-  useEffect(() => {
-    if (perfil) {
-      localStorage.setItem('@perfil', JSON.stringify(perfil));
-    }
-  }, [perfil]);
+  const values = useMemo(() => ({ user, setUser }), [user]);
 
-  const values = useMemo(
-    () => ({
-      user: {
-        value: user,
-        set: setUser,
-      },
-      perfil: {
-        value: perfil,
-        set: setPerfil,
-      },
-    }),
-    [user, perfil, setUser, setPerfil],
-  );
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };
 

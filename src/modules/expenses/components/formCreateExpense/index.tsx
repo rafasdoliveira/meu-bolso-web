@@ -10,27 +10,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@components/ui/select';
-import { Controller, UseFormReturn } from 'react-hook-form';
+import { Switch } from '@components/ui/switch';
+import { Info } from 'lucide-react';
+import { Controller, UseFormReturn, useWatch } from 'react-hook-form';
 import { CreateExpenseSchema } from '../../schema/createExpenseSchema';
-import { GetExpenseCategoriesOutputDto } from '../../services/getExpenseCategories/getExpenseCategories.dto';
-import { GetPaymentTypesOutputDto } from '@modules/incomes/services/getPaymentTypes/getPaymentTypes.dto';
+import { GetExpenseCategoriesOutputDto } from '../../submodules/expenseCategories/services/getExpenseCategories/getExpenseCategories.dto';
+import { GetPaymentMethodsOutputDto } from '../../submodules/paymentMethods/services/getPaymentMethods/getPaymentMethods.dto';
 
 interface FormCreateExpenseProps {
   form: UseFormReturn<CreateExpenseSchema>;
   categories: GetExpenseCategoriesOutputDto;
-  paymentTypes: GetPaymentTypesOutputDto;
+  paymentMethods: GetPaymentMethodsOutputDto;
 }
 
-function FormCreateExpense({ form, categories, paymentTypes }: Readonly<FormCreateExpenseProps>) {
-  const selectedCategoryId = form.watch('subcategory_id')?.split('-')[0];
-  const selectedCategory = categories.find((c) => String(c.id) === selectedCategoryId);
+function FormCreateExpense({
+  form,
+  categories,
+  paymentMethods,
+}: Readonly<FormCreateExpenseProps>) {
+  const isRecurrent = useWatch({ control: form.control, name: 'is_recurrent' });
 
   return (
     <Form form={form}>
       <div>
         <div className='grid grid-cols-2 gap-2'>
           <TextInput
-            divClassName='px-0'
+            divClassName='flex flex-col justify-end'
+            labelClassName='font-semibold'
+            inputClassName='my-2'
             control={form.control}
             label='Data da despesa'
             name='date'
@@ -38,7 +45,7 @@ function FormCreateExpense({ form, categories, paymentTypes }: Readonly<FormCrea
             required
           />
           <div className='my-2'>
-            <Label className='mb-2 font-semibold'>Tipo de Pagamento</Label>
+            <Label className='mb-2 font-semibold'>Método de Pagamento</Label>
             <Controller
               name='payment_type_id'
               control={form.control}
@@ -49,10 +56,11 @@ function FormCreateExpense({ form, categories, paymentTypes }: Readonly<FormCrea
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Tipo de Pagamento</SelectLabel>
-                      {paymentTypes.map((pt) => (
-                        <SelectItem key={pt.id} value={String(pt.id)}>
-                          {pt.name}
+                      <SelectLabel>Método de Pagamento</SelectLabel>
+                      {paymentMethods.map((pm) => (
+                        <SelectItem key={pm.id} value={String(pm.id)}>
+                          {pm.name}
+                          {pm.last_four_digits && ` •••• ${pm.last_four_digits}`}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -99,10 +107,7 @@ function FormCreateExpense({ form, categories, paymentTypes }: Readonly<FormCrea
                       <SelectGroup key={category.id}>
                         <SelectLabel>{category.name}</SelectLabel>
                         {category.subcategories.map((sub) => (
-                          <SelectItem
-                            key={sub.id}
-                            value={String(sub.id)}
-                          >
+                          <SelectItem key={sub.id} value={String(sub.id)}>
                             {sub.name}
                           </SelectItem>
                         ))}
@@ -132,40 +137,89 @@ function FormCreateExpense({ form, categories, paymentTypes }: Readonly<FormCrea
           placeholder='0,00'
           required
         />
-        <div className='grid grid-cols-2 gap-2'>
-          <TextInput
-            divClassName='my-2'
+
+        {/* Recurrence toggle */}
+        <div className='my-3 flex items-center gap-3'>
+          <Controller
+            name='is_recurrent'
             control={form.control}
-            label='Item'
-            name='item'
-            type='text'
-            placeholder='Ex: Notebook'
+            render={({ field }) => (
+              <Switch
+                id='is_recurrent'
+                checked={field.value ?? false}
+                onCheckedChange={(checked) => {
+                  field.onChange(checked);
+                  if (checked) {
+                    form.setValue('installment_current', undefined);
+                    form.setValue('installment_total', undefined);
+                  }
+                }}
+              />
+            )}
           />
-          <TextInput
-            divClassName='my-2'
-            control={form.control}
-            label='Observação'
-            name='notes'
-            type='text'
-            placeholder='Deixe uma observação'
-          />
-          <TextInput
-            divClassName='my-2'
-            control={form.control}
-            label='Parcela atual'
-            name='installment_current'
-            type='number'
-            placeholder='Ex: 1'
-          />
-          <TextInput
-            divClassName='my-2'
-            control={form.control}
-            label='Total de parcelas'
-            name='installment_total'
-            type='number'
-            placeholder='Ex: 12'
-          />
+          <Label htmlFor='is_recurrent' className='cursor-pointer font-semibold'>Despesa Recorrente</Label>
         </div>
+
+        {isRecurrent && (
+          <div className='mb-3 flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-600 dark:bg-amber-950 dark:text-amber-300'>
+            <Info className='mt-0.5 size-4 shrink-0' />
+            <span>
+              A despesa será lançada mensalmente. Informe uma data de término para limitar a recorrência ou deixe em branco para continuar por 24 meses.
+            </span>
+          </div>
+        )}
+
+        {isRecurrent ? (
+          <TextInput
+            divClassName='my-2'
+            control={form.control}
+            label='Data de término da recorrência (opcional)'
+            name='recurrence_end_date'
+            type='date'
+            required={false}
+          />
+        ) : (
+          <div className='grid grid-cols-2 gap-2'>
+            <TextInput
+              divClassName='my-2'
+              control={form.control}
+              label='Item'
+              name='item'
+              type='text'
+              placeholder='Ex: Notebook'
+              required={false}
+            />
+            <TextInput
+              divClassName='my-2'
+              control={form.control}
+              label='Observação'
+              name='notes'
+              type='text'
+              placeholder='Deixe uma observação'
+              required={false}
+            />
+            <TextInput
+              divClassName='my-2'
+              control={form.control}
+              label='Parcela atual'
+              name='installment_current'
+              type='number'
+              placeholder='Ex: 1'
+              min={1}
+              required={false}
+            />
+            <TextInput
+              divClassName='my-2'
+              control={form.control}
+              label='Total de parcelas'
+              name='installment_total'
+              type='number'
+              placeholder='Ex: 12'
+              min={1}
+              required={false}
+            />
+          </div>
+        )}
       </div>
     </Form>
   );

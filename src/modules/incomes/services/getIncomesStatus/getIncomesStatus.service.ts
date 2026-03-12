@@ -7,7 +7,10 @@ class GetIncomesStatusService {
   constructor(private readonly api: AxiosInstance) {}
 
   async execute(): Promise<GetIncomesStatusOutputDto> {
-    const response = await this.api.get<ApiResponse<GetIncomesStatusOutputDto>>(`/income-status`);
+    const response =
+      await this.api.get<ApiResponse<GetIncomesStatusOutputDto>>(
+        `/income-status`,
+      );
     return response.data.data;
   }
 }

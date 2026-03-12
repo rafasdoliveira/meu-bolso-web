@@ -29,6 +29,10 @@ const tableColumnsExpenses: ColumnDef<Expense>[] = [
     header: 'Parcela',
   },
   {
+    accessorKey: 'invoice_date',
+    header: 'Fatura',
+  },
+  {
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
@@ -40,7 +44,8 @@ const tableColumnsExpenses: ColumnDef<Expense>[] = [
             'capitalize',
             status === 'paid' && 'bg-green-500 hover:bg-green-500',
             status === 'pending' && 'bg-yellow-500 hover:bg-yellow-500',
-            !['paid', 'pending'].includes(status) && 'bg-gray-400 hover:bg-gray-400',
+            !['paid', 'pending'].includes(status) &&
+              'bg-gray-400 hover:bg-gray-400',
           )}
         >
           {status === 'paid' ? 'Pago' : 'Pendente'}

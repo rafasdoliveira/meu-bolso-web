@@ -5,7 +5,7 @@ const useListingSourcesQuery = () => {
   return useQuery({
     queryKey: ['listing-sources'],
     queryFn: async () => getSourcesService.execute(),
-    initialData: []
+    initialData: [],
   });
 };
 

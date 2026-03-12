@@ -1,12 +1,12 @@
+export type AuthUser = {
+  id: number;
+  name: string;
+  email: string;
+};
+
 type UserContextType = {
-  user: {
-    value: string;
-    set: React.Dispatch<string>;
-  };
-  perfil: {
-    value: string[];
-    set: React.Dispatch<string[]>;
-  };
+  user: AuthUser | null;
+  setUser: (user: AuthUser | null) => void;
 };
 
 export type { UserContextType };

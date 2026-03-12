@@ -1,8 +1,8 @@
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
-import { defineConfig } from 'vitest/config'
-import { VitePWA } from 'vite-plugin-pwa'
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vitest/config';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   plugins: [
@@ -71,8 +71,8 @@ export default defineConfig({
         'dist/',
         '**/*.config.*',
         '**/*.d.ts',
-        'src/shared/api/http.ts'
-      ]
-    }
-  }
-})
+        'src/shared/api/http.ts',
+      ],
+    },
+  },
+});

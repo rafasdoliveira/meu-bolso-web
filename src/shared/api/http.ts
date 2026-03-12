@@ -1,42 +1,41 @@
 import { baseURL } from '../configs/path';
 import axios from 'axios';
-import { toast } from 'sonner';
 
 function httpClientBuilder() {
-  const client = axios.create({ baseURL });
+  const client = axios.create({ baseURL, withCredentials: true });
 
-  client.interceptors.request.use((config) => {
-    const token = sessionStorage.getItem('@access_token');
-    if (token && config.headers) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  });
+  let isRefreshing = false;
 
   client.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const response = error.response;
+      const originalRequest = error.config;
 
-      if (response?.status === 401) {
-        const data = response.data;
-
-        if (
-          data?.erro === 'token_expired' ||
-          data?.mensagem === 'Token expirado'
-        ) {
-          toast.error('Sessão expirada. Faça login novamente.');
-          localStorage.clear();
-          sessionStorage.clear();
-          window.location.href = '/auth/login';
-          return Promise.reject(error);
+      if (
+        error.response?.status === 401 &&
+        !originalRequest._retry &&
+        !originalRequest.url?.includes('/auth/refresh')
+      ) {
+        if (isRefreshing) {
+          throw error;
         }
 
-        window.location.href = '/auth/login';
-        return Promise.reject(error);
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        try {
+          await client.post('/auth/refresh');
+          isRefreshing = false;
+          return client(originalRequest);
+        } catch {
+          isRefreshing = false;
+          localStorage.clear();
+          window.location.href = '/';
+          throw error;
+        }
       }
 
-      return Promise.reject(error);
+      throw error;
     },
   );
 

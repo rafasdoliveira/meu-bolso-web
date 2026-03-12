@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createExpenseService } from '../../services/postExpense/postExpense.service';
-import { CreateExpenseInputDto, CreateExpenseOutputDto } from '../../services/postExpense/postExpense.dto';
+import {
+  CreateExpenseInputDto,
+  CreateExpenseOutputDto,
+} from '../../services/postExpense/postExpense.dto';
 
 export function useCreateExpenseMutation() {
   const queryClient = useQueryClient();
@@ -9,6 +12,8 @@ export function useCreateExpenseMutation() {
     mutationFn: (payload) => createExpenseService.execute(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['listing-expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['expenses-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-chart'] });
     },
   });
 }

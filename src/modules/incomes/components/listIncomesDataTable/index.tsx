@@ -1,30 +1,45 @@
+import { useState } from 'react';
 import { DataTable } from '@components/datatable';
 import { ActionButton } from '@shared/types/actionButtonType';
-import { Pencil } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { tableColumnsIncomes } from '../tableColumnsIncomes';
 import { useListingIncomesQuery } from '../../hooks/queries/useListingIncomesQuery';
+import { useDeleteIncomeMutation } from '../../hooks/mutations/useDeleteIncomeMutation';
 import { Income } from '@shared/types/income';
 import { usePagination } from '@shared/hooks/usePagination';
+import { DialogEditIncome } from '../dialogEditIncome';
+import { toast } from 'sonner';
 
 function ListIncomesDataTable() {
+  const [incomeToEdit, setIncomeToEdit] = useState<Income | null>(null);
+
   const pagination = usePagination();
   const { data: listingIncomes, isLoading } = useListingIncomesQuery({
     page: pagination.pageInfo.value.page,
     size: pagination.pageInfo.value.perPage,
   });
 
+  const { mutate: deleteIncome } = useDeleteIncomeMutation();
+
   const actionsIncomes: ActionButton[] = [
     {
       label: 'Editar Receita',
       icon: <Pencil />,
-      onClick: (row: Income) => {
-        console.log(row);
-      },
+      onClick: (row: Income) => setIncomeToEdit(row),
+    },
+    {
+      label: 'Excluir Receita',
+      icon: <Trash2 />,
+      onClick: (row: Income) =>
+        deleteIncome(row.id, {
+          onSuccess: () => toast.success('Receita excluída com sucesso!'),
+          onError: () => toast.error('Erro ao excluir a receita.'),
+        }),
     },
   ];
 
   return (
-    <div>
+    <>
       <DataTable
         actionButtons={actionsIncomes}
         columns={tableColumnsIncomes}
@@ -39,7 +54,12 @@ function ListIncomesDataTable() {
         handlePreviousPage={pagination.handlePreviousPage}
         handleNextPage={pagination.handleNextPage}
       />
-    </div>
+
+      <DialogEditIncome
+        income={incomeToEdit}
+        onClose={() => setIncomeToEdit(null)}
+      />
+    </>
   );
 }
 

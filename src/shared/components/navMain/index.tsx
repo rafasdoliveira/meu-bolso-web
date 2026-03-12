@@ -40,7 +40,7 @@ export function NavMain({ items }: Readonly<Props>) {
         >
           <LayoutDashboard />
           <span>Dashboard</span>
-          <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]collapsible:rotate-90' />
+          <ChevronRight className='group-data-[state=open]collapsible:rotate-90 ml-auto transition-transform duration-200' />
         </SidebarMenuButton>
         <Separator className='my-2 border' />
         <SidebarGroupLabel>Módulos</SidebarGroupLabel>

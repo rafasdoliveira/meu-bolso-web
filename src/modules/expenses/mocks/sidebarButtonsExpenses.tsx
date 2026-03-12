@@ -1,20 +1,30 @@
 import { SidebarButtonType } from '@shared/types/sidebarButtonType';
-import { ArrowDownCircle } from 'lucide-react';
-import { GiPayMoney } from 'react-icons/gi';
+import { ArrowDownCircle, CreditCard, Receipt, Tag } from 'lucide-react';
 
 const SideBarButtonsExpenses: SidebarButtonType[] = [
   {
     label: 'Despesas',
     disabled: false,
     icon: <ArrowDownCircle />,
-    items: [
-      {
-        icon: <GiPayMoney />,
-        title: 'Minhas Despesas',
-        path: '/despesas',
-      },
-    ],
     path: '/despesas',
+  },
+  {
+    label: 'Categorias de Despesa',
+    disabled: false,
+    icon: <Tag />,
+    path: '/categorias-despesas',
+  },
+  {
+    label: 'Métodos de Pagamento',
+    disabled: false,
+    icon: <CreditCard />,
+    path: '/metodos-pagamento',
+  },
+  {
+    label: 'Faturas',
+    disabled: false,
+    icon: <Receipt />,
+    path: '/faturas',
   },
 ];
 

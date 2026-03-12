@@ -52,6 +52,7 @@ const TextInput = <T extends FieldValues>({
         id={name}
         type={type}
         {...field}
+        value={field.value ?? ''}
         className={inputClassName}
       />
       {error && (

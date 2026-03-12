@@ -16,16 +16,16 @@ export type CreateIncomeOutputDto = {
     amount: number;
     notes: string;
     incomeSources: {
-        id: number;
-        name: string;
+      id: number;
+      name: string;
     };
     paymentType: {
-        id: number;
-        name: string;
+      id: number;
+      name: string;
     };
     incomeStatus: {
-        id: number;
-        name: string;
+      id: number;
+      name: string;
     };
   };
 };

@@ -12,6 +12,9 @@ export type CreateExpenseInputDto = {
   subcategory_id?: number;
   payment_type_id: number;
   status: 'pending' | 'paid';
+  is_recurrent?: boolean;
+  recurrence_end_date?: string;
+  invoice_date?: string;
 };
 
 export type CreateExpenseOutputDto = Expense;

@@ -5,7 +5,7 @@ const useListingIncomesStatusQuery = () => {
   return useQuery({
     queryKey: ['listing-income-status'],
     queryFn: async () => getIncomesStatusService.execute(),
-    initialData: []
+    initialData: [],
   });
 };
 

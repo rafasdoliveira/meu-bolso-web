@@ -11,19 +11,25 @@ import {
   DialogTrigger,
 } from '@shared/components/ui/dialog';
 import { CirclePlus } from 'lucide-react';
+import { useState } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useListingPaymentTypesQuery } from '@modules/incomes/hooks/queries/useListingPaymentTypesQuery';
+import { useListingPaymentMethodsQuery } from '../../submodules/paymentMethods/hooks/queries/useListingPaymentMethodsQuery';
 import { useCreateExpenseMutation } from '../../hooks/mutations/useCreateExpenseMutation';
-import { useListingExpenseCategoriesQuery } from '../../hooks/queries/useListingExpenseCategoriesQuery';
+import { useListingExpenseCategoriesQuery } from '../../submodules/expenseCategories/hooks/queries/useListingExpenseCategoriesQuery';
 import { createExpenseDefaultValues } from '../../schema/createExpenseDefaultValues';
-import { CreateExpenseSchema, createExpenseSchema } from '../../schema/createExpenseSchema';
+import {
+  CreateExpenseSchema,
+  createExpenseSchema,
+} from '../../schema/createExpenseSchema';
 import { CreateExpenseInputDto } from '../../services/postExpense/postExpense.dto';
 import { FormCreateExpense } from '../formCreateExpense';
 
 function DialogCreateExpense() {
+  const [open, setOpen] = useState(false);
+
   const { data: categories = [] } = useListingExpenseCategoriesQuery();
-  const { data: paymentTypes = [] } = useListingPaymentTypesQuery();
+  const { data: paymentMethods = [] } = useListingPaymentMethodsQuery();
 
   const { mutate: createExpense, isPending } = useCreateExpenseMutation();
 
@@ -42,26 +48,31 @@ function DialogCreateExpense() {
       status: data.status,
       item: data.item || undefined,
       notes: data.notes || undefined,
-      subcategory_id: data.subcategory_id ? Number(data.subcategory_id) : undefined,
-      installment_current: data.installment_current,
-      installment_total: data.installment_total,
+      subcategory_id: data.subcategory_id
+        ? Number(data.subcategory_id)
+        : undefined,
+      installment_current: data.is_recurrent ? undefined : data.installment_current,
+      installment_total: data.is_recurrent ? undefined : data.installment_total,
+      is_recurrent: data.is_recurrent || undefined,
+      recurrence_end_date: data.is_recurrent && data.recurrence_end_date
+        ? data.recurrence_end_date
+        : undefined,
     };
 
-    try {
-      createExpense(params);
-      toast.success('Despesa cadastrada com sucesso!');
-      form.reset();
-    } catch (error) {
-      console.log(error);
-      form.setError('root', {
-        type: 'server',
-        message: 'Erro ao salvar a despesa. Tente novamente.',
-      });
-    }
+    createExpense(params, {
+      onSuccess: () => {
+        toast.success('Despesa cadastrada com sucesso!');
+        form.reset(createExpenseDefaultValues);
+        setOpen(false);
+      },
+      onError: () => {
+        toast.error('Erro ao salvar a despesa. Tente novamente.');
+      },
+    });
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <CirclePlus />
@@ -69,18 +80,19 @@ function DialogCreateExpense() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className='sm:max-w-[500px]'>
+      <DialogContent className='sm:max-w-125'>
         <DialogHeader>
           <DialogTitle>Cadastro de Despesa</DialogTitle>
           <DialogDescription>
-            Preencha as informações abaixo para adicionar uma nova despesa às suas finanças.
+            Preencha as informações abaixo para adicionar uma nova despesa às
+            suas finanças.
           </DialogDescription>
         </DialogHeader>
 
         <FormCreateExpense
           form={form}
           categories={categories}
-          paymentTypes={paymentTypes}
+          paymentMethods={paymentMethods}
         />
 
         <DialogFooter>

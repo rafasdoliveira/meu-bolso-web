@@ -7,7 +7,10 @@ class GetPaymentTypesService {
   constructor(private readonly api: AxiosInstance) {}
 
   async execute(): Promise<GetPaymentTypesOutputDto> {
-    const response = await this.api.get<ApiResponse<GetPaymentTypesOutputDto>>(`/payment-types`);
+    const response =
+      await this.api.get<ApiResponse<GetPaymentTypesOutputDto>>(
+        `/payment-types`,
+      );
     return response.data.data;
   }
 }

@@ -1,11 +1,7 @@
-import { IncomesLayout } from "src/modules/incomes/components/layout"
+import { IncomesLayout } from 'src/modules/incomes/components/layout';
 
 function SourcesPage() {
-    return(
-        <IncomesLayout>
-            Fontes de Receita
-        </IncomesLayout>
-    )
+  return <IncomesLayout>Fontes de Receita</IncomesLayout>;
 }
 
-export { SourcesPage }
+export { SourcesPage };

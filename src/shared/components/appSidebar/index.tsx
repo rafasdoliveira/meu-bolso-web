@@ -16,12 +16,6 @@ export function AppSidebar({
   navMain,
   ...props
 }: { navMain: SidebarButtonType[] } & React.ComponentProps<typeof Sidebar>) {
-  const user = {
-    name: 'Rafael Oliveira',
-    email: 'rafasdoliveira@outlook.com',
-    avatar: '/avatars/shadcn.jpg',
-  };
-
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader className='bg-white'>
@@ -34,7 +28,7 @@ export function AppSidebar({
         <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter className='bg-white'>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -10,9 +10,12 @@ export function useDeleteExpenseMutation() {
   const queryClient = useQueryClient();
 
   return useMutation<void, Error, DeleteExpenseParams>({
-    mutationFn: ({ id, deleteAll }) => deleteExpenseService.execute(id, deleteAll),
+    mutationFn: ({ id, deleteAll }) =>
+      deleteExpenseService.execute(id, deleteAll),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['listing-expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['expenses-summary'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-chart'] });
     },
   });
 }

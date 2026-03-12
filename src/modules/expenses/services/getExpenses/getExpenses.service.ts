@@ -7,7 +7,10 @@ class GetExpensesService {
   constructor(private readonly api: AxiosInstance) {}
 
   async execute(params: GetExpensesInputDto): Promise<GetExpensesOutputDto> {
-    const response = await this.api.get<ApiResponse<GetExpensesOutputDto>>('/expenses', { params });
+    const response = await this.api.get<ApiResponse<GetExpensesOutputDto>>(
+      '/expenses',
+      { params },
+    );
     return response.data.data;
   }
 }

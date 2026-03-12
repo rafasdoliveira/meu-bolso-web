@@ -7,7 +7,8 @@ class GetSourcesService {
   constructor(private readonly api: AxiosInstance) {}
 
   async execute(): Promise<GetSourcesOutputDto> {
-    const response = await this.api.get<ApiResponse<GetSourcesOutputDto>>(`/sources`);
+    const response =
+      await this.api.get<ApiResponse<GetSourcesOutputDto>>(`/sources`);
     return response.data.data;
   }
 }

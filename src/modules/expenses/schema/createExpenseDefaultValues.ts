@@ -9,4 +9,6 @@ export const createExpenseDefaultValues: CreateExpenseSchema = {
   item: '',
   notes: '',
   subcategory_id: '',
+  is_recurrent: false,
+  recurrence_end_date: '',
 };

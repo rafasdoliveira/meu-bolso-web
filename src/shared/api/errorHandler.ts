@@ -1,22 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from 'sonner';
 
-const errorHandler = (error: any, context?: string) => {
-  let err: string;
+function getApiErrorMessage(error: any, fallback = 'Ocorreu um erro inesperado.'): string {
+  const data = error?.response?.data;
+  if (!data) return fallback;
 
-  const hasMultipleErrors = Array.isArray(error.response?.data.mensagem);
-  if (hasMultipleErrors) {
-    err = `${
-      error.response.data.statusCode
-    }: ${error.response.data.mensagem.join(' / ')}`;
-  } else if (error.response.data) {
-    err = `${error.response.status}: ${error.response.data.mensagem}`;
-  } else {
-    err = '500: Erro interno do servidor';
+  // New API format: { message: string | string[] }
+  if (data.message) {
+    return Array.isArray(data.message) ? data.message.join(' / ') : data.message;
   }
 
-  console.error(`${context?.toUpperCase()} - ${err}`);
-  toast.error(err);
+  // Legacy format: { mensagem: string | string[] }
+  if (data.mensagem) {
+    return Array.isArray(data.mensagem) ? data.mensagem.join(' / ') : data.mensagem;
+  }
+
+  return fallback;
+}
+
+const errorHandler = (error: any, context?: string) => {
+  const message = getApiErrorMessage(error);
+  if (context) console.error(`${context.toUpperCase()} - ${message}`);
+  toast.error(message);
 };
 
-export { errorHandler };
+export { errorHandler, getApiErrorMessage };
